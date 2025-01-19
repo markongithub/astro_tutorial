@@ -7,21 +7,28 @@ export async function getStaticPaths() {
         import.meta.glob("../posts/*.md", { eager: true }),
     );
 
-    return [
-        { params: { tag: "astro" }, props: { posts: allPosts } },
-        { params: { tag: "successes" }, props: { posts: allPosts } },
-        { params: { tag: "community" }, props: { posts: allPosts } },
-        { params: { tag: "blogging" }, props: { posts: allPosts } },
-        { params: { tag: "setbacks" }, props: { posts: allPosts } },
-        { params: { tag: "learning in public" }, props: { posts: allPosts } },
-    ];
+    var tagIndex = new Map();
+    for (const post of allPosts) {
+        for (const tag of post.frontmatter.tags) {
+            console.log([...tagIndex]);
+            // console.log("Considering tag " + tag + " when tagIndex has " + [...tagIndex]);
+            if (tagIndex.has(tag)) {
+                tagIndex.get(tag).push(post);
+            } else {
+                tagIndex.set(tag, [post]);
+            }
+        }
+    }
+    var output = [];
+    for (let [key, value] of tagIndex) {
+        output.push({ params: { tag: key }, props: { posts: value } });
+    }
+    return output;
 }
 
 const { tag } = Astro.params;
 const { posts } = Astro.props;
-const filteredPosts = posts.filter((post: any) =>
-    post.frontmatter.tags?.includes(tag),
-);
+const filteredPosts = posts;
 const pageTitle = "Posts tagged with " + tag;
 ---
 
