@@ -2,18 +2,17 @@ import { useState } from 'preact/hooks';
 
 export default function Greeting({ messages }) {
 
-  const randomNumber = (Math.floor(Math.random() * messages.length))
-  console.log("The random number was " + randomNumber);
-  const randomMessage = () => messages[randomNumber];
+  console.log("This time I ran the Greeting function.")
+  const randomMessage = () => {
+    console.log("This time I ran randomMessage.");
+    return messages[(Math.floor(Math.random() * messages.length))];
+  }
 
   const [greeting, setGreeting] = useState(messages[0]);
-  var totalClicks = 0;
   return (
     <div>
       <h3>{greeting}! Thank you for visiting!</h3>
       <button onClick={() => {
-        totalClicks++;
-        console.log("You have now clicked it this many times: " + totalClicks);
         setGreeting(randomMessage());
       }}>
         New Greeting
